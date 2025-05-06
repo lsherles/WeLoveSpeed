@@ -1,0 +1,16 @@
+body {
+    font-family: sans-serif;
+    padding: 40px;
+  }
+  
+  .tooltip {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #888;
+    padding: 6px;
+    font-size: 13px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
