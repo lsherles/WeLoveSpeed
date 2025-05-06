@@ -2,13 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>D3 Interactive Scatterplot</title>
+  <title>Interactive Scatterplot</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-  <h1>Interactive Scatterplot</h1>
+  <div id="controls">
+    <label>Height (cm): <input type="number" id="heightInput"></label>
+    <label>Weight (kg): <input type="number" id="weightInput"></label>
+    <label>Age: <input type="number" id="ageInput"></label>
+    <label>Humidity: <input type="number" id="humidityInput"></label>
+    <label>Sex:
+      <select id="sexInput">
+        <option value="">Any</option>
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+      </select>
+    </label>
+    <button id="filter">Apply Filters</button>
+  </div>
+
   <div id="scatterplot"></div>
-  <script type="module" src="global.js"></script>
+
+  <script src="global.js"></script>
 </body>
 </html>
