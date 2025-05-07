@@ -34,12 +34,10 @@ d3.csv("averages.csv").then(raw => {
 
   xScale = d3.scaleLinear()
     .domain(d3.extent(data, d => d.Speed))
-    .nice()
     .range([margin.left, width - margin.right]);
 
   yScale = d3.scaleLinear()
     .domain(d3.extent(data, d => d.HR))
-    .nice()
     .range([height - margin.bottom, margin.top]);
 
   // Axes
@@ -77,7 +75,8 @@ function updatePlot(filtered) {
     .attr("cy", d => yScale(d.HR))
     .attr("r", 5)
     .attr("fill", "tomato")
-    .on("mouseover", (event, d) => {
+    .on("mouseover", function(event, d) {
+      d3.select(this).attr('r', 7).attr('fill', 'blue');
       tooltip.style("opacity", 1)
         .html(`
           <strong>ID:</strong> ${d.ID}<br>
@@ -95,11 +94,15 @@ function updatePlot(filtered) {
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 20) + "px");
     })
-    .on("mousemove", event => {
+    
+    .on("mousemove", function(event) {
       tooltip.style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 20) + "px");
     })
-    .on("mouseout", () => {
+    .on("mouseout", function() {
+      d3.select(this)
+      .attr("r", 5)
+      .attr("fill", "tomato");
       tooltip.style("opacity", 0);
     });
 }
