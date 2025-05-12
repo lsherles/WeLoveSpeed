@@ -2,28 +2,151 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Interactive Scatterplot</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Beating Heart Visualization</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    svg {
+      margin-top: 20px;
+    }
+    .slider-container {
+      margin-top: 20px;
+      width: 400px;
+    }
+    .slider-label {
+      margin-bottom: 5px;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: auto auto;
+    }
+  </style>
 </head>
 <body>
-  <div id="controls">
-    <label>Height (cm): <input type="number" id="heightInput"></label>
-    <label>Weight (kg): <input type="number" id="weightInput"></label>
-    <label>Age: <input type="number" id="ageInput"></label>
-    <label>Humidity: <input type="number" id="humidityInput"></label>
-    <label>Sex:
-      <select id="sexInput">
-        <option value="">Any</option>
-        <option value="female">Female</option>
-        <option value="male">Male</option>
-      </select>
-    </label>
-    <button id="filter">Apply Filters</button>
-  </div>
 
-  <div id="scatterplot"></div>
+<h2>Beating Heart Visualization</h2>
+<div class = "container">
+    <div class="slider-container">
+        <div class="slider-label">Height: <span id="heightValue">170</span></div>
+        <input type="range" id="heightSlider" min="100" max="240" value="170">
+        
+        <div class="slider-label">Weight: <span id="weightValue">70</span></div>
+        <input type="range" id="weightSlider" min="60" max="100" value="70">
+        
+        <div class="slider-label">Age: <span id="ageValue">20</span></div>
+        <input type="range" id="ageSlider" min="15" max="100" value="20">
+        
+        <div class="slider-label">Speed: <span id="speedValue">5</span></div>
+        <input type="range" id="speedSlider" min="1" max="10" value="5">
+        
+        <div class="slider-label">Time: <span id="timeValue">10</span></div>
+        <input type="range" id="timeSlider" min="0" max="600" value="100">
+    </div>
+    <div>
+        <svg width="400" height="400"></svg>
+    </div>
+</div>
 
-  <script src="global.js"></script>
+
+
+<script>
+const svg = d3.select("svg");
+const width = +svg.attr("width");
+const height = +svg.attr("height");
+const g = svg.append("g").attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+const heartPath = "M0,-30 \
+C-25,-50 -55,-15 -35,10 \
+C-20,25 0,40 0,55 \
+C0,40 20,25 35,10 \
+C55,-15 25,-50 0,-30 Z";
+
+const heart = g.append("path")
+  .attr("d", heartPath)
+  .attr("fill", d3.interpolateReds(0.8))
+  .attr("stroke", "darkred")
+  .attr("stroke-width", 2);
+
+let beatScale = 1.5;
+let vals = [1, 170, 70, 20, 5, 10];
+let slope = [166, -0.51483115,  0.34914223, -0.66365178,  4.04014269,  0.03803097,  9.82608819];
+let colorIntensity = 0.8;
+let beatSpeed = 1;
+let bpm = 1;
+
+function updateHeart() {
+    bpm = 0;
+    for (let i = 0; i < 6; i++) {
+        bpm += vals[i] * slope[i];
+    }
+
+    beatSpeed = 60000/bpm;
+
+  heart.transition()
+    .duration(beatSpeed / 2)
+    .ease(d3.easeCubicOut)
+    .attr("transform", `scale(${beatScale})`)
+    .attr("fill", d3.interpolateReds(colorIntensity))
+    .transition()
+    .duration(beatSpeed / 2)
+    .ease(d3.easeCubicIn)
+    .attr("transform", `scale(1)`)
+    .attr("fill", d3.interpolateReds(colorIntensity * 0.7));
+    console.log(bpm);
+}
+
+let interval = d3.interval(updateHeart, beatSpeed);
+updateHeart(); // initial call
+
+d3.select("#heightSlider").on("input", function () {
+    vals[1] = this.value;
+    d3.select("#heightValue").text = this.value;
+    interval.stop();
+    interval = d3.interval(updateHeart, beatSpeed);
+    
+  });
+
+  // Slider event listeners
+d3.select("#weightSlider").on("input", function () {
+    vals[2] = this.value;
+    interval.stop();
+    interval = d3.interval(updateHeart, beatSpeed);
+  });
+
+  // Slider event listeners
+d3.select("#ageSlider").on("input", function () {
+    vals[3] = this.value;
+    interval.stop();
+    interval = d3.interval(updateHeart, beatSpeed);
+  });
+
+// Slider event listeners
+d3.select("#speedSlider").on("input", function () {
+    vals[4] = this.value;
+  interval.stop();
+  interval = d3.interval(updateHeart, beatSpeed);
+});
+
+  // Slider event listeners
+
+
+  // Slider event listeners
+d3.select("#timeSlider").on("input", function () {
+    vals[5] = this.value;
+    interval.stop();
+    interval = d3.interval(updateHeart, beatSpeed);
+  });
+
+
+
+    
+</script>
+
 </body>
 </html>
