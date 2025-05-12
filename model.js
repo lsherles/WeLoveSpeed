@@ -12,7 +12,7 @@ function euclideanDistance(a, b) {
   return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
 }
 
-function knnRegress(trainData, testPoint, k = 10) {
+function knnRegress(trainData, testPoint, k = 5) {
   const distances = trainData.map(data => ({
     distance: euclideanDistance(data.features, testPoint),
     targets: data.targets
