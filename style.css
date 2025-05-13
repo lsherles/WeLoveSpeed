@@ -1,10 +1,24 @@
 body {
   font-family: sans-serif;
-  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-#controls {
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: flex-start;
   margin-bottom: 20px;
+}
+
+.controls label {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  min-width: 150px;
 }
 
 label {
@@ -21,4 +35,28 @@ label {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s;
+}
+
+svg {
+  margin-top: 20px;
+}
+
+.slider-container {
+  margin-top: 20px;
+  width: 400px;
+}
+
+.slider-label {
+  margin-bottom: 5px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8em;
+  margin-top: 2px;
 }
