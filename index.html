@@ -1,248 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    <meta charset="UTF-8" />
-    <title>Beating Heart Visualization</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <script type="module" src="model.js"></script>
-    <script type="module" src="global.js"></script>
-   
+<head>
+  <meta charset="UTF-8" />
+  <title>Beating Heart Visualization</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="model.js"></script>
+  <script type="module" src="global.js"></script>
+</head>
 
-  </head>
 <body>
-
-
-  
-        
-  <body>
-    <div class="nav">
-      <h1>WeLoveSpeed</h1>
-    </div>
-    <div class="container">
-      <div class="left">
-        <h2>Heart Rate Measure</h2>
-        <p class="description">
-          Your goals matter. Provide your profile and goal and we will calculate
-          the appropriate speed and heart rate at which you should walk
-        </p>
-        <div class="input-container">
-          <div class="text-input">
-            <span>Height</span>
-            <input
-              type="number"
-              id="heightInput"
-              min="100"
-              max="240"
-              value="170"
-            />
-          </div>
-          <div class="text-input">
-            <span>Weight</span>
-            <input
-              type="number"
-              id="weightInput"
-              min="100"
-              max="240"
-              value="170"
-            />
-          </div>
-          <div class="text-input">
-            <span>Sex</span>
-            <div class="radio-group">
-              <label class="radio-option">
-                <input type="radio" name="sex" value="male" checked />
-                Male
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="sex" value="female" />
-                Female
-              </label>
-            </div>
-          </div>
-          <div class="text-input">
-            <span>Age</span>
-            <input
-              type="number"
-              id="ageInput"
-              min="20"
-              max="65"
-              value="25"
-            />
-          </div>
-          <div class="text-input">
-            <span>Goals</span>
-            <div class="goals">
-              <label class="radio-option">
-                <input type="radio" name="goal" value="5" checked />
-                Boost sprinting speed
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="goal" value="4" />
-                Increase anaerobic threshold
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="goal" value="3" />
-                Improve aerobic fitness
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="goal" value="2" />
-                Increase endurance
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="goal" value="1" />
-                Improve overall fitness
-              </label>
-
-            </div>
-          </div>
-          </div>
-          <button id="filter">Calculate Speed and Heart Rate</button>
+  <div class="nav">
+    <h1>WeLoveSpeed</h1>
+  </div>
+  <button id="themeButton">Toggle Theme</button>
+  <div class="container">
+    <div class="left">
+      <h2>Heart Rate Measure</h2>
+      <p class="description">
+        Your goals matter. Provide your profile and goal and we will calculate
+        the appropriate speed and heart rate at which you should exercise.
+      </p>
+      <div class="input-container">
+        <div class="text-input">
+          <span>Height</span>
+          <input type="number" id="heightInput" min="100" max="240" value="180" />
         </div>
+        <div class="text-input">
+          <span>Weight</span>
+          <input type="number" id="weightInput" min="100" max="240" value="150" />
+        </div>
+        
+        <div class="text-input">
+          <span>Age</span>
+          <input type="number" id="ageInput" min="20" max="65" value="20" />
+        </div>
+        <div class="text-input">
+          <span>Sex</span>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="sex" value="male" checked /> Male
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="sex" value="female" /> Female
+            </label>
+          </div>
+        </div>
+        <div class="text-input">
+          <span>Goals</span>
+          <div class="goals">
+            <label class="radio-option">
+              <input type="radio" name="goal" value="5" checked/> Boost sprinting speed
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="goal" value="4" /> Increase anaerobic threshold
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="goal" value="3" /> Improve aerobic fitness
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="goal" value="2" /> Increase endurance
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="goal" value="1" /> Improve overall fitness
+            </label>
+          </div>
+        </div>
+        <button id="filter">Calculate Speed and Heart Rate</button>
       </div>
-   
     </div>
 
-  </body>
+    <div class="right">
+      <svg id="track-svg" width="600" height="500"></svg>
+    </div>
+  </div>
+
+  <script type="module">
+    import { setupThemeToggle, setupPrediction, initTrackAnimation } from './global.js';
+    setupThemeToggle();
+    setupPrediction(); // if dataset defined in global.js
+  </script>
+
+
+  <!-- <script>
+    // speed can be dynamically set from model.js later
+    let speed = 5;
+    const svg = d3.select("#track-svg");
+    const width = +svg.attr("width");
+    const height = +svg.attr("height");
+
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const trackColor = '#c93e3e'; // Hardcoded darker red
+    const dotColor = getComputedStyle(document.documentElement).getPropertyValue(isDark ? '--dot-dark' : '--dot-light');
+    const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-light');
+
+    const trackWidth = width * 0.6;
+    const trackHeight = height * 0.6;
+    const centerX = width / 2;
+    const centerY = height / 2;
+
+    const trackPath = svg.append("path")
+      .attr("fill", "none")
+      .attr("stroke", trackColor)
+      .attr("stroke-width", 20)
+      .attr("d", `
+        M ${centerX - trackWidth / 2},${centerY - trackHeight / 2}
+        A ${trackWidth / 2},${trackHeight / 2} 0 0 1 ${centerX + trackWidth / 2},${centerY - trackHeight / 2}
+        L ${centerX + trackWidth / 2},${centerY + trackHeight / 2}
+        A ${trackWidth / 2},${trackHeight / 2} 0 0 1 ${centerX - trackWidth / 2},${centerY + trackHeight / 2}
+        Z
+      `);
+
+    const dot = svg.append("circle")
+      .attr("r", 10)
+      .attr("fill", dotColor);
+
+    const pathNode = trackPath.node();
+    const pathLength = pathNode.getTotalLength();
+
+    function animateDot() {
+      dot.transition()
+        .duration(400 / 1609 / speed * 360000)
+        .ease(d3.easeLinear)
+        .attrTween("transform", () => t => {
+          const point = pathNode.getPointAtLength(t * pathLength);
+          return `translate(${point.x},${point.y})`;
+        })
+        .on("end", animateDot);
+    }
+
+    animateDot();
+
+    const centerText = svg.append("text")
+      .attr("x", centerX)
+      .attr("y", centerY - 18)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "32px")
+      .attr("fill", textColor);
+
+    centerText.append("tspan")
+      .attr("x", centerX)
+      .attr("dy", "1em")
+      .text(`${Math.floor(400 / 1609 / speed * 3600 / 60)} min ${parseInt(400 / 1609 / speed * 3600) % 60} sec`)
+      .attr("font-size", "50px");
+
+    centerText.append("tspan")
+      .attr("x", centerX)
+      .attr("dy", "1.2em")
+      .text("400m Olympic Track")
+      .attr("font-size", "25px");
+  </script> -->
+</body>
+
 </html>
-
-    <!-- <script>
-      const svg = d3.select("svg");
-      const width = +svg.attr("width");
-      const height = +svg.attr("height");
-      const g = svg
-        .append("g")
-        .attr("transform", `translate(${width / 2}, ${height / 2})`);
-
-      const heartPath =
-        "M0,-30 \
-C-25,-50 -55,-15 -35,10 \
-C-20,25 0,40 0,55 \
-C0,40 20,25 35,10 \
-C55,-15 25,-50 0,-30 Z";
-
-      const heart = g
-        .append("path")
-        .attr("d", heartPath)
-        .attr("fill", d3.interpolateReds(0.8))
-        .attr("stroke", "darkred")
-        .attr("stroke-width", 2);
-
-      let beatScale = 1.5;
-      let vals = [1, 170, 70, 20, 5, 10];
-      let slope = [
-        166, -0.51483115, 0.34914223, -0.66365178, 4.04014269, 0.03803097,
-        9.82608819,
-      ];
-      let colorIntensity = 0.8;
-      let beatSpeed = 1;
-      let bpm = 1;
-
-      function updateHeart() {
-        bpm = 0;
-        for (let i = 0; i < 6; i++) {
-          bpm += vals[i] * slope[i];
-        }
-
-        beatSpeed = 60000 / bpm;
-
-        heart
-          .transition()
-          .duration(beatSpeed / 2)
-          .ease(d3.easeCubicOut)
-          .attr("transform", `scale(${beatScale})`)
-          .attr("fill", d3.interpolateReds(colorIntensity))
-          .transition()
-          .duration(beatSpeed / 2)
-          .ease(d3.easeCubicIn)
-          .attr("transform", `scale(1)`)
-          .attr("fill", d3.interpolateReds(colorIntensity * 0.7));
-        //console.log(bpm);
-      }
-
-      let interval = d3.interval(updateHeart, beatSpeed);
-      updateHeart(); // initial call
-
-      d3.select("#heightSlider").on("input", function () {
-        vals[1] = this.value;
-        d3.select("#heightValue").text = this.value;
-        interval.stop();
-        interval = d3.interval(updateHeart, beatSpeed);
-      });
-
-      // Slider event listeners
-      d3.select("#weightSlider").on("input", function () {
-        vals[2] = this.value;
-        interval.stop();
-        interval = d3.interval(updateHeart, beatSpeed);
-      });
-
-      // Slider event listeners
-      d3.select("#ageSlider").on("input", function () {
-        vals[3] = this.value;
-        interval.stop();
-        interval = d3.interval(updateHeart, beatSpeed);
-      });
-
-      // Slider event listeners
-      d3.select("#speedSlider").on("input", function () {
-        vals[4] = this.value;
-        interval.stop();
-        interval = d3.interval(updateHeart, beatSpeed);
-      });
-
-      // Slider event listeners
-
-      // Slider event listeners
-      d3.select("#timeSlider").on("input", function () {
-        vals[5] = this.value;
-        interval.stop();
-        interval = d3.interval(updateHeart, beatSpeed);
-      });
-    </script> -->
-
-
-
-
-
-    <!-- <h2>Beating Heart Visualization</h2>
-  <div class="controls">
-    <label>Height (cm): 
-      <input type="number" id="heightInput">
-      <div class="error-message" id="heightError"></div>
-    </label>
-
-    <label>Weight (kg): 
-      <input type="number" id="weightInput">
-      <div class="error-message" id="weightError"></div>
-    </label>
-
-    <label>Age: 
-      <input type="number" id="ageInput">
-      <div class="error-message" id="ageError"></div>
-    </label>
-
-    <label>Sex:
-      <select id="sexInput">
-        <option value="">Any</option>
-        <option value="female">Female</option>
-        <option value="male">Male</option>
-      </select>
-      <div class="error-message" id="sexError"></div>
-    </label>
-
-    <label for="zoneInput">Zone:
-      <select id="zoneInput">
-        <option value="">Any</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-      <div class="error-message" id="zoneError"></div>
-    </label>
-
-    
-  </div> -->

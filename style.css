@@ -5,6 +5,14 @@
   --primary: #ff2929;
   --secondary: #2d2d2d;
   --tertiary: #3d3bf3;
+  --track-red: #8b0000;
+  --track-red-dark: #ff6b6b;
+  --bg-light: #f5f7fa;
+  --bg-dark: #1e1e1e;
+  --text-light: #1d3557;
+  --text-dark: #f1faee;
+  --dot-light: #a8dadc;
+  --dot-dark: #a8dadc;
 }
 
 body {
@@ -66,7 +74,7 @@ svg {
 }
 
 h1 {
-  color: var(--secondary);
+  color: #ffffff;
   font-size: 20px;
   padding: 2px 20px;
   font-weight: 600;
@@ -105,7 +113,11 @@ h2 {
   justify-content: start;
   width: 100%;
   text-align: center;
+  padding: 1rem;
+  background: #333;
+  color: white;
 }
+
 
 .radio-group {
   display: flex;
@@ -169,3 +181,92 @@ h2 {
   font-size: 16px;
   font-weight: 400;
 }
+
+body.light-mode {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
+
+body.dark-mode {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+body.dark-mode h2{
+  color: white;
+}
+
+body.dark-mode .text-input,
+body.dark-mode .text-input span,
+body.dark-mode .text-input input,
+body.dark-mode .radio-option,
+body.dark-mode .radio-option label {
+  color: white;
+}
+
+body.dark-mode .text-input input,
+body.dark-mode .radio-option {
+  background-color: #2a2a2a;
+  border: 1px solid #666;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  padding: 2rem;
+}
+.left {
+  width: 45%;
+}
+.right {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.description {
+  margin-bottom: 1rem;
+}
+body.dark-mode .description {
+  color: white;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.text-input {
+  display: flex;
+  flex-direction: column;
+}
+.radio-group,
+.goals {
+  display: flex;
+  flex-direction: column;
+}
+svg {
+  overflow: visible;
+}
+#themeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 8px 16px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+
+
+/* @media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--bg-dark);
+  }
+} */
