@@ -42,7 +42,7 @@ function knnRegress(trainData, testPoint, k = 5) {
 export function initTrackAnimation(speed, hr) {
   clearTrack();
   const svg = d3.select("#track-svg");
-  const trackColor = '#c93e3e';
+  const trackColor = '#darkred';
   const dotColor = getComputedStyle(document.documentElement).getPropertyValue('--dot-light').trim();
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-light').trim();
 
