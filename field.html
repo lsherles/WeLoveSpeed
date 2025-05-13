@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Football Field with D3 Fill Animation</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      background-color: #1a1a1a;
+      display: flex;
+      justify-content: center;
+      padding-top: 30px;
+    }
+    :root {
+      --bg-light: #f5f7fa;
+      --bg-dark: #1e1e1e;
+
+      --track-light: #e63946;
+      --track-dark: #ff6b6b;
+
+      --dot-light: #1d3557;
+      --dot-dark: #a8dadc;
+
+      --text-light: #1d3557;
+      --text-dark: #f1faee;
+    }
+
+    svg {
+      border: 2px solid #fff;
+      padding: 1em;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+  <svg width="600" height="400"></svg>
+
+  <script>
+  // speed can be changed to reflect the model
+  let speed = 5;
+  const svg = d3.select("svg");
+  const fieldWidth = 600;
+  const fieldHeight = 300;
+  const endzoneWidth = 50;
+  const playableWidth = fieldWidth - 2 * endzoneWidth;
+
+  svg.append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", fieldWidth)
+    .attr("height", fieldHeight)
+    .attr("fill", "#228B22");
+
+  svg.append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", endzoneWidth)
+    .attr("height", fieldHeight)
+    .attr("fill", "red");
+
+  svg.append("rect")
+    .attr("x", fieldWidth - endzoneWidth)
+    .attr("y", 0)
+    .attr("width", endzoneWidth)
+    .attr("height", fieldHeight)
+    .attr("fill", "red");
+
+  for (let x = endzoneWidth; x <= fieldWidth - endzoneWidth; x += 50) {
+    svg.append("line")
+      .attr("x1", x)
+      .attr("y1", 0)
+      .attr("x2", x)
+      .attr("y2", fieldHeight)
+      .attr("stroke", "white")
+      .attr("stroke-width", 2);
+  }
+
+  const overlay = svg.append("rect")
+    .attr("x", endzoneWidth)
+    .attr("y", 0)
+    .attr("width", 0)
+    .attr("height", fieldHeight)
+    .attr("fill", "rgba(0, 0, 0, 0.3)");
+
+  const duration = 100/1720/speed * 360000;
+
+  const centerText = svg.append("text")
+  .attr("x", fieldWidth / 2)
+  .attr("y", fieldHeight) 
+  .attr("text-anchor", "middle")
+  .attr("font-size", "32px")
+  .attr("fill", "white");
+
+centerText.append("tspan")
+  .attr("x", fieldWidth / 2)
+  .attr("dy", "1em")
+  .text(`${Math.floor(100/1720/speed*3600 / 60)} min ${parseInt(100/1720/speed*3600) % 60} sec`)
+  .attr("font-size", "50px");
+
+centerText.append("tspan")
+  .attr("x", fieldWidth / 2)
+  .attr("dy", "1.2em")
+  .text("100yrd Football Field")
+  .attr("font-size", "25px");
+
+  function animateOverlay() {
+    overlay
+      .attr("width", 0)
+      .transition()
+      .duration(duration)
+      .ease(d3.easeLinear)
+      .attr("width", playableWidth)
+      .on("end", animateOverlay);
+  }
+
+  
+
+  animateOverlay();
+  </script>
+  
+</body>
+</html>

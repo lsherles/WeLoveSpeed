@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Centered Olympic Track</title>
+  <style>
+    :root {
+      --bg-light: #f5f7fa;
+      --bg-dark: #1e1e1e;
+
+      --track-light: #e63946;
+      --track-dark: #ff6b6b;
+
+      --dot-light: #1d3557;
+      --dot-dark: #a8dadc;
+
+      --text-light: #1d3557;
+      --text-dark: #f1faee;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: var(--bg-light);
+      font-family: sans-serif;
+    }
+
+    svg {
+      overflow: visible;
+    }   
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: var(--bg-dark);
+      }
+    }
+  </style>
+</head>
+<body>
+  <svg id="track-svg" width="600" height="500"></svg>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // speed can be changed to reflect the model
+    let speed = 5;
+    const svg = d3.select("#track-svg");
+    const width = +svg.attr("width");
+    const height = +svg.attr("height");
+
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const trackColor = getComputedStyle(document.documentElement).getPropertyValue(isDark ? '--track-dark' : '--track-light');
+    const dotColor = getComputedStyle(document.documentElement).getPropertyValue(isDark ? '--dot-dark' : '--dot-light');
+    const textColor = getComputedStyle(document.documentElement).getPropertyValue(isDark ? '--text-dark' : '--text-light');
+
+    const trackWidth = width * 0.6;
+    const trackHeight = height * 0.6;
+    const centerX = width / 2;
+    const centerY = height / 2;
+
+    const trackPath = svg.append("path")
+      .attr("fill", "none")
+      .attr("stroke", trackColor)
+      .attr("stroke-width", 20)
+      .attr("d", `
+        M ${centerX - trackWidth / 2},${centerY - trackHeight / 2}
+        A ${trackWidth / 2},${trackHeight / 2} 0 0 1 ${centerX + trackWidth / 2},${centerY - trackHeight / 2}
+        L ${centerX + trackWidth / 2},${centerY + trackHeight / 2}
+        A ${trackWidth / 2},${trackHeight / 2} 0 0 1 ${centerX - trackWidth / 2},${centerY + trackHeight / 2}
+        Z
+      `);
+
+    const dot = svg.append("circle")
+      .attr("r", 10)
+      .attr("fill", dotColor);
+
+    const pathNode = trackPath.node();
+    const pathLength = pathNode.getTotalLength();
+
+    function animateDot() {
+      dot.transition()
+        .duration(400/1609/speed*360000)
+        .ease(d3.easeLinear)
+        .attrTween("transform", () => t => {
+          const point = pathNode.getPointAtLength(t * pathLength);
+          return `translate(${point.x},${point.y})`;
+        })
+        .on("end", animateDot);
+    }
+
+    animateDot();
+    const centerText = svg.append("text")
+      .attr("x", centerX)
+      .attr("y", centerY - 18)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "32px")
+      .attr("fill", textColor);
+
+    centerText.append("tspan")
+      .attr("x", centerX)
+      .attr("dy", "1em")
+      .text(`${Math.floor(400/1609/speed*3600 / 60)} min ${parseInt(400/1609/speed*3600) % 60} sec`)
+      .attr("font-size", "50px");;
+
+    centerText.append("tspan")
+      .attr("x", centerX)
+      .attr("dy", "1.2em")
+      .text("400m Olympic Track")
+      .attr("font-size", "25px");
+  </script>
+</body>
+</html>
