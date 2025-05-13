@@ -38,24 +38,24 @@ const testPoint = [10.8,48.8,163,1,3];
 console.log(knnRegress(dataset,testPoint)); //outputs dict type with speed and hr components
 
 
-// Load data
-d3.csv("averages.csv").then(raw => {
-  raw.forEach(d => {
-    d.ID = d.ID;
-    d.Age = +d.Age;
-    d.Weight = +d.Weight;
-    d.Height = +d.Height;
-    d.Humidity = +d.Humidity;
-    d.Sex = d.Sex.trim().toLowerCase();
-    d.Speed = +d.Speed;
-    d.HR = +d.HR;
-    d.VO2 = +d.VO2;
-    d.VCO2 = +d.VCO2;
-    d.RR = +d.RR;
-    d.VE = +d.VE;
-  });
+// // Load data
+// d3.csv("averages.csv").then(raw => {
+//   raw.forEach(d => {
+//     d.ID = d.ID;
+//     d.Age = +d.Age;
+//     d.Weight = +d.Weight;
+//     d.Height = +d.Height;
+//     d.Humidity = +d.Humidity;
+//     d.Sex = d.Sex.trim().toLowerCase();
+//     d.Speed = +d.Speed;
+//     d.HR = +d.HR;
+//     d.VO2 = +d.VO2;
+//     d.VCO2 = +d.VCO2;
+//     d.RR = +d.RR;
+//     d.VE = +d.VE;
+//   });
 
-})
+// })
 document.getElementById("filter").addEventListener("click", () => {
   // Get input values
   const heightInput = parseFloat(document.getElementById("heightInput").value);
@@ -95,6 +95,7 @@ document.getElementById("filter").addEventListener("click", () => {
   const prediction = knnRegress(dataset, filterPoint);
   console.log("Predicted Speed:", prediction.speed.toFixed(2));
   console.log("Predicted HR:", prediction.hr.toFixed(2));
+  console.log(prediction);
 });
 
 
