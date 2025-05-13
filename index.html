@@ -24,12 +24,12 @@
       </p>
       <div class="input-container">
         <div class="text-input">
-          <span>Height</span>
-          <input type="number" id="heightInput" min="100" max="240" value="180" />
+          <span>Height (cm)</span>
+          <input type="number" id="heightInput" min="100" max="251" value="180" />
         </div>
         <div class="text-input">
-          <span>Weight</span>
-          <input type="number" id="weightInput" min="100" max="240" value="150" />
+          <span>Weight (kg)</span>
+          <input type="number" id="weightInput" min="100" max="500" value="70" />
         </div>
         
         <div class="text-input">
@@ -71,86 +71,20 @@
       </div>
     </div>
 
-    <div class="right">
-      <svg id="track-svg" width="600" height="500"></svg>
+  <!--Heart and track svgs-->
+  <div class="right">
+    <div id="heart-container" style="display: flex; justify-content: center; margin-bottom: 10px;">
+      <svg id="heart-svg" width="100" height="100"></svg>
     </div>
+    <svg id="track-svg" width="600" height="500"></svg>
   </div>
+</div>
 
   <script type="module">
     import { setupThemeToggle, setupPrediction, initTrackAnimation } from './global.js';
     setupThemeToggle();
     setupPrediction(); // if dataset defined in global.js
   </script>
-
-
-  <!-- <script>
-    // speed can be dynamically set from model.js later
-    let speed = 5;
-    const svg = d3.select("#track-svg");
-    const width = +svg.attr("width");
-    const height = +svg.attr("height");
-
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const trackColor = '#c93e3e'; // Hardcoded darker red
-    const dotColor = getComputedStyle(document.documentElement).getPropertyValue(isDark ? '--dot-dark' : '--dot-light');
-    const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-light');
-
-    const trackWidth = width * 0.6;
-    const trackHeight = height * 0.6;
-    const centerX = width / 2;
-    const centerY = height / 2;
-
-    const trackPath = svg.append("path")
-      .attr("fill", "none")
-      .attr("stroke", trackColor)
-      .attr("stroke-width", 20)
-      .attr("d", `
-        M ${centerX - trackWidth / 2},${centerY - trackHeight / 2}
-        A ${trackWidth / 2},${trackHeight / 2} 0 0 1 ${centerX + trackWidth / 2},${centerY - trackHeight / 2}
-        L ${centerX + trackWidth / 2},${centerY + trackHeight / 2}
-        A ${trackWidth / 2},${trackHeight / 2} 0 0 1 ${centerX - trackWidth / 2},${centerY + trackHeight / 2}
-        Z
-      `);
-
-    const dot = svg.append("circle")
-      .attr("r", 10)
-      .attr("fill", dotColor);
-
-    const pathNode = trackPath.node();
-    const pathLength = pathNode.getTotalLength();
-
-    function animateDot() {
-      dot.transition()
-        .duration(400 / 1609 / speed * 360000)
-        .ease(d3.easeLinear)
-        .attrTween("transform", () => t => {
-          const point = pathNode.getPointAtLength(t * pathLength);
-          return `translate(${point.x},${point.y})`;
-        })
-        .on("end", animateDot);
-    }
-
-    animateDot();
-
-    const centerText = svg.append("text")
-      .attr("x", centerX)
-      .attr("y", centerY - 18)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "32px")
-      .attr("fill", textColor);
-
-    centerText.append("tspan")
-      .attr("x", centerX)
-      .attr("dy", "1em")
-      .text(`${Math.floor(400 / 1609 / speed * 3600 / 60)} min ${parseInt(400 / 1609 / speed * 3600) % 60} sec`)
-      .attr("font-size", "50px");
-
-    centerText.append("tspan")
-      .attr("x", centerX)
-      .attr("dy", "1.2em")
-      .text("400m Olympic Track")
-      .attr("font-size", "25px");
-  </script> -->
 </body>
 
 </html>

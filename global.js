@@ -4,6 +4,8 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 const width = 800;
 const height = 500;
 const margin = { top: 40, right: 40, bottom: 60, left: 60 };
+let bpmText;
+let heart;
 
 // Load dataset
 const input = await d3.csv("input.csv");
@@ -40,12 +42,12 @@ function knnRegress(trainData, testPoint, k = 5) {
 export function initTrackAnimation(speed, hr) {
   clearTrack();
   const svg = d3.select("#track-svg");
-  const trackColor = '#c93e3e'; // Default track color (hardcoded)
+  const trackColor = '#c93e3e';
   const dotColor = getComputedStyle(document.documentElement).getPropertyValue('--dot-light').trim();
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-light').trim();
 
-  const trackWidth = width * 0.45;
-  const trackHeight = height * 0.6;
+  const trackWidth = width * 0.6;
+  const trackHeight = height * 0.75;
   const centerX = width / 2;
   const centerY = height / 2;
 
@@ -53,6 +55,8 @@ export function initTrackAnimation(speed, hr) {
     .attr("fill", "none")
     .attr("stroke", trackColor)
     .attr("stroke-width", 20)
+    .attr("stroke-linejoin", "round") // Ensure smooth joins between curves
+    .attr("stroke-linecap", "round")  // Ensure smooth ends of path
     .attr("d", `
       M ${centerX - trackWidth / 2},${centerY - trackHeight / 2}
       A ${trackWidth / 2},${trackHeight / 2} 0 0 1 ${centerX + trackWidth / 2},${centerY - trackHeight / 2}
@@ -79,18 +83,35 @@ export function initTrackAnimation(speed, hr) {
       .on("end", animateDot);
   }
 
+  // Add heart at center
+  const heartG = svg.append("g")
+    .attr("transform", `translate(${centerX}, ${centerY-100})`);
+
+  const heartPathData = "M0,-30 C-25,-50 -55,-15 -35,10 C-20,25 0,40 0,55 C0,40 20,25 35,10 C55,-15 25,-50 0,-30 Z";
+
+  heart = heartG.append("path")
+    .attr("d", heartPathData)
+    .attr("fill", d3.interpolateReds(0.8))
+    .attr("stroke", "darkred")
+    .attr("stroke-width", 2);
+
+  bpmText = heartG.append("text")
+    .attr("class", "bpm-text")
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .attr("fill", "white")
+    .attr("font-size", "18px")
+    .text(`${Math.round(hr)}bpm`);
+
   animateDot();
   showPredictionText(svg, centerX, centerY, speed, hr, textColor);
-
 }
-
 // Function to clear the track animation
 function clearTrack() {
   d3.select("#track-svg").selectAll("*").remove();
 }
 
 // Function to display the prediction text
-
 function showPredictionText(svg, centerX, centerY, speed, hr, textColor) {
   const centerText = svg.append("text")
     .attr("x", centerX)
@@ -98,17 +119,16 @@ function showPredictionText(svg, centerX, centerY, speed, hr, textColor) {
     .attr("text-anchor", "middle")
     .attr("font-size", "32px")
     .attr("fill", textColor);
-
-  centerText.append("tspan")
-    .attr("x", centerX)
-    .attr("dy", "1em")
-    .text(`Speed: ${(speed/1.609344).toFixed(2)} mph`)
-    .attr("font-size", "28px");
-
   centerText.append("tspan")
     .attr("x", centerX)
     .attr("dy", "1.4em")
     .text(`Heart Rate: ${Math.round(hr)} bpm`)
+    .attr("font-size", "28px");
+
+  centerText.append("tspan")
+    .attr("x", centerX)
+    .attr("dy", "1em")
+    .text(`Speed: ${(speed).toFixed(2)} mph`)
     .attr("font-size", "28px");
 
   centerText.append("tspan")
@@ -156,8 +176,55 @@ function updateTrackColors(theme) {
 
   d3.select("path").attr("stroke", trackColor);
   d3.select("circle").attr("fill", dotColor);
-  d3.select("text").attr("fill", textColor);
+  d3.selectAll("text:not(.bpm-text)").attr("fill", textColor);
 }
+
+// // Heart SVG setup
+// const heartSvg = d3.select("#heart-svg");
+// const heartG = heartSvg.append("g")
+//   .attr("transform", `translate(${heartSvg.attr("width") / 2}, ${heartSvg.attr("height") / 2}) scale(1)`);
+
+// const heartPath = "M0,-30 C-25,-50 -55,-15 -35,10 C-20,25 0,40 0,55 C0,40 20,25 35,10 C55,-15 25,-50 0,-30 Z";
+
+// const heart = heartG.append("path")
+//   .attr("d", heartPath)
+//   .attr("fill", d3.interpolateReds(0.8))
+//   .attr("stroke", "darkred")
+//   .attr("stroke-width", 2);
+
+// const bpmText = heartG.append("text")
+//   .attr("text-anchor", "middle")
+//   .attr("dy", "0.35em")
+//   .attr("fill", "white")
+//   .attr("font-size", "18px")
+//   .text("60");
+
+let bpm = 60;
+let beatSpeed = 60000 / bpm;
+
+function updateHeart() {
+  beatSpeed = 60000 / bpm;
+  bpmText.text(`${parseInt(bpm)} bpm`);
+  heart.transition()
+    .duration(beatSpeed / 2)
+    .attr("transform", "scale(1.3)")
+    .transition()
+    .duration(beatSpeed / 2)
+    .attr("transform", "scale(1)");
+}
+let beatInterval = d3.interval(updateHeartRate, beatSpeed);
+
+
+// Function to update the heart rate on the heart
+export function updateHeartRate(predictedBpm) {
+  bpm = predictedBpm;
+  bpmText.text(`${parseInt(bpm)} bpm`);
+  beatInterval.stop();
+  beatSpeed = 60000 / bpm;
+  beatInterval = d3.interval(updateHeart, beatSpeed);
+}
+
+
 
 // Setup prediction logic (form validation and KNN regression)
 export function setupPrediction() {
@@ -205,6 +272,7 @@ export function setupPrediction() {
     console.log("Predicted Speed:", prediction.speed.toFixed(2));
     console.log("Predicted HR:", prediction.hr.toFixed(2));
     initTrackAnimation(prediction.speed, prediction.hr);
+    updateHeartRate(prediction.hr);
   });
 }
 
