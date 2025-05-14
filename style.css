@@ -268,6 +268,36 @@ svg {
   transition: background-color 0.3s ease;
 }
 
+.navbar {
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center;     /* Center them horizontally */
+  padding: 1rem;
+}
+
+.logo {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--text-light);
+}
+
+.external-link {
+  margin-top: 0.5rem;
+  text-decoration: none;
+  color: var(--text-light);
+  font-size: 1rem;
+  transition: color 0.3s;
+}
+
+body.dark-mode .external-link {
+  color: var(--text-dark);
+}
+
+.external-link:hover {
+  color: var(--accent-color);
+}
+
+
 
 
 /* @media (prefers-color-scheme: dark) {
