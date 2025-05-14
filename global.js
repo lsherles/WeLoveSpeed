@@ -6,22 +6,20 @@ const height = 500;
 const margin = { top: 40, right: 40, bottom: 60, left: 60 };
 let bpmText;
 let heart;
+let dataset = [];
 document.addEventListener("DOMContentLoaded", async () => {
-  // Ensure theme class is set
   if (!document.body.classList.contains("light-mode") && !document.body.classList.contains("dark-mode")) {
     document.body.classList.add("light-mode");
   }
 
-  // Load data
   const input = await d3.csv("input.csv");
   const output = await d3.csv("output.csv");
-  });
 
-// KNN Regression Logic
-const dataset = input.map((row, i) => {
-  const features = Object.values(row).map(Number);
-  const targets = Object.values(output[i]).map(Number);
-  return { features, targets };
+  dataset = input.map((row, i) => {
+    const features = Object.values(row).map(Number);
+    const targets = Object.values(output[i]).map(Number);
+    return { features, targets };
+  });
 });
 
 function euclideanDistance(a, b) {
@@ -48,7 +46,7 @@ function knnRegress(trainData, testPoint, k = 5) {
 export function initTrackAnimation(speed, hr) {
   clearTrack();
   const svg = d3.select("#track-svg");
-  const trackColor = '#darkred';
+  const trackColor = 'darkred';
   const dotColor = getComputedStyle(document.documentElement).getPropertyValue('--dot-light').trim();
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-light').trim();
 
@@ -70,6 +68,7 @@ export function initTrackAnimation(speed, hr) {
       A ${trackWidth / 2},${trackHeight / 2} 0 0 1 ${centerX - trackWidth / 2},${centerY + trackHeight / 2}
       Z
     `);
+    updateHeartRate(hr); // start the heart pulsing animation
 
   const dot = svg.append("circle")
     .attr("r", 10)
@@ -210,25 +209,35 @@ let beatSpeed = 60000 / bpm;
 
 function updateHeart() {
   beatSpeed = 60000 / bpm;
-  bpmText.text(`${parseInt(bpm)} bpm`);
-  heart.transition()
+  if (bpmText) {
+    bpmText.text(`${parseInt(bpm)} bpm`);
+  }
+    heart.transition()
     .duration(beatSpeed / 2)
     .attr("transform", "scale(1.3)")
     .transition()
     .duration(beatSpeed / 2)
     .attr("transform", "scale(1)");
 }
-let beatInterval = d3.interval(updateHeartRate, beatSpeed);
+let beatInterval = null
 
 
 // Function to update the heart rate on the heart
 export function updateHeartRate(predictedBpm) {
   bpm = predictedBpm;
-  bpmText.text(`${parseInt(bpm)} bpm`);
-  beatInterval.stop();
+  if (!heart) return; // guard: skip if heart is not yet created
+  if (bpmText) {
+    bpmText.text(`${parseInt(bpm)} bpm`);
+  }
+
+  if (beatInterval) {
+    beatInterval.stop();
+  }
+
   beatSpeed = 60000 / bpm;
   beatInterval = d3.interval(updateHeart, beatSpeed);
 }
+
 
 
 
