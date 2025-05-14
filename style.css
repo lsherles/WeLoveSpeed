@@ -23,7 +23,7 @@ body {
   width: 100%;
 
   align-items: center;
-  margin: 0; 
+  margin: 0;
   padding: 0;
   font-family: "Open Sans", sans-serif;
 }
@@ -79,7 +79,7 @@ svg {
 }
 
 h1 {
-  color: #ffffff;
+  color: #000000;
   font-size: 20px;
   padding: 2px 20px;
   font-weight: 600;
@@ -91,16 +91,6 @@ h2 {
   padding: 0;
   margin: 0;
   font-weight: 400;
-}
-
-.left {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: start;
-  width: 500px;
-  padding: 20px;
-  gap: 20px;
 }
 
 .description {
@@ -115,14 +105,13 @@ h2 {
 .nav {
   border-bottom: 1px solid #0000002a;
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   text-align: center;
-  padding: 1rem;
-  background: #333;
-  color: white;
+  padding: 10px;
+  color: #000000 !important;
 }
-
 
 .radio-group {
   display: flex;
@@ -197,7 +186,11 @@ body.dark-mode {
   color: var(--text-dark);
 }
 
-body.dark-mode h2{
+body.dark-mode h2 {
+  color: white;
+}
+
+body.dark-mode h1 {
   color: white;
 }
 
@@ -217,24 +210,35 @@ body.dark-mode .radio-option {
 
 .container {
   display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  padding: 40px 0;
 }
-.left {
-  width: 45%;
-}
+.left,
 .right {
-  width: 50%;
+  flex: 1 1 50%;
+  max-width: 50%;
+  box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
+
 .description {
   margin-bottom: 1rem;
+  text-align: center;
 }
 body.dark-mode .description {
   color: white;
+}
+
+#track-svg {
+  width: 100%;
+  height: auto;
+  max-width: 900px;
+  aspect-ratio: 16 / 10;
+  display: block;
 }
 
 .input-container {
@@ -254,15 +258,27 @@ body.dark-mode .description {
 svg {
   overflow: visible;
 }
+
+.track-container {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+}
+
 #themeButton {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 8px 16px;
-  background-color: white;
-  color: black;
+  height: 100%;
+
+  background-color: var(--tertiary);
+  color: #ffffff;
+  padding: 12px 20px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 400;
   cursor: pointer;
   z-index: 1000;
   transition: background-color 0.3s ease;
@@ -270,8 +286,8 @@ svg {
 
 .navbar {
   display: flex;
-  flex-direction: column; /* Stack elements vertically */
-  align-items: center;     /* Center them horizontally */
+  flex-direction: column;
+  align-items: center;
   padding: 1rem;
 }
 
@@ -297,11 +313,40 @@ body.dark-mode .external-link {
   color: var(--accent-color);
 }
 
-
-
-
 /* @media (prefers-color-scheme: dark) {
   body {
     background-color: var(--bg-dark);
   }
 } */
+
+@media (max-width: 900px) {
+  body {
+    padding: 0 10px;
+    margin: 0;
+    width: 100%;
+  }
+  .container {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .left,
+  .right {
+    max-width: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+  }
+
+  .track-container {
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+    margin-bottom: 100px;
+  }
+}
