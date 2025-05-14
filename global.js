@@ -6,10 +6,16 @@ const height = 500;
 const margin = { top: 40, right: 40, bottom: 60, left: 60 };
 let bpmText;
 let heart;
+document.addEventListener("DOMContentLoaded", async () => {
+  // Ensure theme class is set
+  if (!document.body.classList.contains("light-mode") && !document.body.classList.contains("dark-mode")) {
+    document.body.classList.add("light-mode");
+  }
 
-// Load dataset
-const input = await d3.csv("input.csv");
-const output = await d3.csv("output.csv");
+  // Load data
+  const input = await d3.csv("input.csv");
+  const output = await d3.csv("output.csv");
+  });
 
 // KNN Regression Logic
 const dataset = input.map((row, i) => {
